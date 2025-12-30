@@ -1,0 +1,53 @@
+# Import required libraries
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# -----------------------------
+# Inbuilt Example Dataset
+# -----------------------------
+data = {
+    "Age": [22, 25, 47, 52, 46, 56, 23, 40, 60, 48],
+    "Income": [25000, 32000, 50000, 52000, 48000, 58000, 27000, 42000, 60000, 52000],
+    "Student": [1, 1, 0, 0, 0, 0, 1, 0, 0, 0],   # 1 = Yes, 0 = No
+    "Credit_Rating": [1, 0, 1, 0, 1, 0, 1, 0, 0, 1],  # 1 = Good, 0 = Bad
+    "Buys_Computer": [1, 1, 0, 0, 0, 0, 1, 0, 0, 0]   # Target
+}
+
+df = pd.DataFrame(data)
+
+# -----------------------------
+# Feature and Target Split
+# -----------------------------
+X = df.drop("Buys_Computer", axis=1)
+y = df["Buys_Computer"]
+
+# -----------------------------
+# Train-Test Split
+# -----------------------------
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# -----------------------------
+# Naive Bayes Model
+# -----------------------------
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+# -----------------------------
+# Predictions
+# -----------------------------
+y_pred = model.predict(X_test)
+
+# -----------------------------
+# Performance Evaluation
+# -----------------------------
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
