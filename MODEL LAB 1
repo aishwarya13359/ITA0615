@@ -1,0 +1,68 @@
+# Import libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+# Create dataset (5 years of quarterly data)
+data = {
+    "Advertising": [20000, 22000, 25000, 27000,
+                    23000, 26000, 28000, 30000,
+                    29000, 31000, 33000, 35000,
+                    34000, 36000, 38000, 40000,
+                    39000, 41000, 43000, 45000],
+
+    "Sales": [180000, 195000, 210000, 225000,
+              200000, 215000, 230000, 250000,
+              245000, 260000, 275000, 295000,
+              290000, 305000, 320000, 340000,
+              335000, 350000, 365000, 385000]
+}
+
+# Convert to DataFrame
+df = pd.DataFrame(data)
+
+# a) Print first five rows
+print("First five rows:")
+print(df.head())
+
+# b) Basic statistical computations
+print("\nStatistical summary:")
+print(df.describe())
+
+# c) Columns and data types
+print("\nData types:")
+print(df.dtypes)
+
+# d) Scatterplot
+plt.figure(figsize=(8,5))
+sns.scatterplot(x="Advertising", y="Sales", data=df)
+plt.title("Advertising vs Sales")
+plt.xlabel("Advertising Expenditure")
+plt.ylabel("Sales")
+plt.show()
+
+# e) Detect and replace null values with mode
+print("\nNull values:")
+print(df.isnull().sum())
+
+for col in df.columns:
+    if df[col].isnull().sum() > 0:
+        df[col].fillna(df[col].mode()[0], inplace=True)
+
+# f) Train-test split
+X = df[["Advertising"]]
+y = df["Sales"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Train Linear Regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+print("\nLinear Regression model trained successfully.")
