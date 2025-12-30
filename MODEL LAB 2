@@ -1,0 +1,62 @@
+import pandas as pd
+
+# -----------------------------
+# Inbuilt Training Dataset
+# -----------------------------
+data = {
+    "Size":  ["Big", "Small", "Big", "Small", "Small"],
+    "Color": ["Red", "Red", "Red", "Red", "Blue"],
+    "Shape": ["Circle", "Triangle", "Circle", "Circle", "Circle"],
+    "Class": ["No", "No", "Yes", "No", "Yes"]
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Separate features and target
+X = df.iloc[:, :-1].values
+y = df.iloc[:, -1].values
+
+# Number of attributes
+num_attributes = X.shape[1]
+
+# Initialize Specific (S) and General (G) hypotheses
+S = ['0'] * num_attributes
+G = [['?'] * num_attributes]
+
+print("Initial Specific Hypothesis:", S)
+print("Initial General Hypothesis:", G)
+
+# -----------------------------
+# Candidate Elimination Algorithm
+# -----------------------------
+for i in range(len(X)):
+    if y[i] == "Yes":  # Positive example
+        for j in range(num_attributes):
+            if S[j] == '0':
+                S[j] = X[i][j]
+            elif S[j] != X[i][j]:
+                S[j] = '?'
+
+        # Remove inconsistent hypotheses from G
+        G = [g for g in G if all(g[j] == '?' or g[j] == S[j] for j in range(num_attributes))]
+
+    else:  # Negative example
+        new_G = []
+        for g in G:
+            for j in range(num_attributes):
+                if g[j] == '?' and S[j] != X[i][j]:
+                    temp = g.copy()
+                    temp[j] = S[j]
+                    new_G.append(temp)
+        G = new_G
+
+    print(f"\nAfter training example {i+1}:")
+    print("Specific Hypothesis:", S)
+    print("General Hypothesis:", G)
+
+# -----------------------------
+# Final Output
+# -----------------------------
+print("\nFinal Specific Hypothesis:", S)
+print("Final General Hypothesis:", G)
