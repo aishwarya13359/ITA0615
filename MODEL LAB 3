@@ -1,0 +1,67 @@
+# Import required libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# -----------------------------
+# Inbuilt Dataset (Binary Classification)
+# -----------------------------
+data = {
+    "Advertising": [20000, 22000, 25000, 27000, 23000, 26000, 28000, 30000,
+                    29000, 31000, 33000, 35000],
+    "Sales": [180000, 195000, 210000, 225000, 200000, 215000, 230000, 250000,
+              245000, 260000, 275000, 295000],
+    "Purchased": [0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1]  # Target variable
+}
+
+df = pd.DataFrame(data)
+
+# -----------------------------
+# Feature and Target Split
+# -----------------------------
+X = df[["Advertising", "Sales"]]
+y = df["Purchased"]
+
+# -----------------------------
+# Train-Test Split
+# -----------------------------
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# -----------------------------
+# Logistic Regression Model
+# -----------------------------
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# -----------------------------
+# Predictions
+# -----------------------------
+y_pred = model.predict(X_test)
+
+# -----------------------------
+# Performance Evaluation
+# -----------------------------
+accuracy = accuracy_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+class_report = classification_report(y_test, y_pred)
+
+print("Accuracy of the Logistic Regression Model:", accuracy)
+print("\nConfusion Matrix:")
+print(conf_matrix)
+print("\nClassification Report:")
+print(class_report)
+
+# -----------------------------
+# Visualization (Optional)
+# -----------------------------
+plt.scatter(df["Advertising"], df["Sales"], c=df["Purchased"], cmap="coolwarm")
+plt.xlabel("Advertising Expenditure")
+plt.ylabel("Sales")
+plt.title("Logistic Regression Data Distribution")
+plt.show()
